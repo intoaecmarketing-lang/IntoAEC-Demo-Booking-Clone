@@ -93,6 +93,19 @@ Until a real ID is set, the loader exits early and makes no request to Google.
 
 `book_demo_open` means the calendar was opened, not that a booking was completed. To track completed bookings, use a thank-you redirect or TidyCal's own integrations.
 
+### MailerLite newsletter
+
+The newsletter form posts to `/api/subscribe` (`api/subscribe.js`, a Vercel serverless function), which adds the email to a MailerLite group. The API key stays on the server and is never in the page.
+
+Set these in Vercel > Project > Settings > Environment Variables, then redeploy:
+
+| Variable | What it is |
+|---|---|
+| `MAILERLITE_API_KEY` | MailerLite API token |
+| `MAILERLITE_GROUP_ID` | Numeric ID of the group new subscribers go into |
+
+If either is missing, the form shows an error and sends nothing. `newsletter_signup` only fires after MailerLite accepts the email. To test locally, run `vercel dev` (opening `index.html` from disk can't reach `/api/subscribe`).
+
 ### TidyCal booking link
 
 The calendar path is set in two files:
