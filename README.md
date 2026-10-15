@@ -75,14 +75,16 @@ TidyCal and Google Tag Manager need an internet connection to load.
 
 ### Google Tag Manager
 
-Replace `GTM-XXXXXXX` in **two places** in `index.html`:
+The container ID appears in **two places** in `index.html`:
 
 | Where | What it is |
 |---|---|
 | `<head>` script | The GTM loader |
 | `<noscript>` right after `<body>` | Fallback for visitors without JavaScript |
 
-Until a real ID is set, the loader exits early and makes no request to Google.
+**GTM is deferred for speed.** GA4 and Clarity (loaded through the container) add about 330 KB of JavaScript, which cut the mobile PageSpeed score to about 65. The loader now injects GTM on the visitor's first interaction (scroll, tap, key press or mouse move), or 5 seconds after the page loads if they do nothing. The `dataLayer` exists from the start, so events pushed earlier are queued and replayed when GTM loads.
+
+Trade-offs: visitors who leave within 5 seconds without interacting are not tracked, and PageSpeed's lab test no longer includes the tracking scripts. To track earlier, lower the `5000` timeout in the `<head>` script (the score drops as it gets lower).
 
 **dataLayer events** you can use as *Custom Event* triggers:
 

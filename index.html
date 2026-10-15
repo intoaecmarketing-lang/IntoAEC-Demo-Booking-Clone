@@ -3,12 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TV74XPLQ');</script>
+<!-- Google Tag Manager (deferred: loads on first interaction, or 5s after page load as a fallback; keeps GA4/Clarity off the critical path) -->
+<script>
+window.dataLayer=window.dataLayer||[];
+(function(w,d,i){var done=0,ev=['scroll','pointerdown','keydown','touchstart','mousemove'];
+function load(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,load)});
+w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtm.js?id='+i;d.head.appendChild(s)}
+ev.forEach(function(e){w.addEventListener(e,load,{passive:true})});
+w.addEventListener('load',function(){setTimeout(load,5000)})
+})(window,document,'GTM-TV74XPLQ');
+</script>
 <!-- End Google Tag Manager -->
 <meta name="robots" content="noindex, nofollow">
 <title>Discovery Call - IntoAEC</title>
