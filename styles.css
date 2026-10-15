@@ -244,3 +244,33 @@ ul{list-style:none}
 }
 @media(max-width:520px){.topbar-r a[target]{display:none}}
 @media(max-width:480px){.hero h1{font-size:24px}.booking{padding:18px}.contact-row{grid-template-columns:1fr}}
+
+/* Mobile polish */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.topbar-r .login{white-space:nowrap;flex:none}
+@media(max-width:900px){
+  .topbar-l a:first-child{display:none}
+  .topbar-l a:nth-child(2){padding-left:0;border-left:0}
+  .hero{padding:32px 0 48px}
+  .acc button{padding:12px 0}
+  .links li{margin-bottom:6px}
+  .links a{display:inline-block;padding:6px 0}
+}
+@media(max-width:480px){
+  .booking{padding:12px}
+  .book-cta{padding:20px 12px}
+  .book-cta h2{font-size:22px}
+  .newsletter{padding:36px 16px 32px}
+  .newsletter h2{font-size:18px}
+  .copy{flex-direction:column;align-items:flex-start}
+  .legal{flex-wrap:wrap}
+}
+@media(max-width:360px){
+  .hero h1{font-size:22px}
+  .container,.container.wide{padding-left:12px;padding-right:12px}
+  .stores{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .track{animation:none}
+}
