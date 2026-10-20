@@ -122,6 +122,10 @@ ul{list-style:none}
 .booking{background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(24,28,57,.12);padding:12px;overflow:hidden;align-self:start}
 .booking.loaded{min-height:650px}
 .tidycal-embed{min-height:600px}
+.book-embed{position:relative;height:0;overflow:hidden;visibility:hidden}
+.book-embed.show{height:auto;overflow:visible;visibility:visible}
+.book-embed .book-note{margin-top:8px}
+.book-error{color:#b3261e;font-size:14px;margin:0 0 14px}
 .book-cta{padding:28px 24px}
 .book-cta h2{font-size:24px;line-height:1.3;color:var(--head);margin:14px 0 10px}
 .book-cta p{font-size:15px}
@@ -130,7 +134,8 @@ ul{list-style:none}
 .book-cta li::before{content:"";position:absolute;left:4px;top:11px;width:5px;height:5px;border-radius:50%;background:#333}
 .book-cta .btn{padding:16px;font-size:15px}
 .book-cta .book-note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px}
-.book-loading{display:flex;align-items:center;justify-content:center;min-height:600px;color:var(--muted);font-size:14px}
+.book-loading{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 16px;color:var(--muted);font-size:14px;line-height:1.6;background:#fff}
+.book-note a,.book-loading a,.book-error a{color:var(--primary);text-decoration:underline}
 
 .integrations{padding:30px 0 60px;text-align:center}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#444;margin-bottom:22px}

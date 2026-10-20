@@ -19,17 +19,16 @@
 
 ## How it works
 
-The expensive part of the original page is the TidyCal booking widget. Here it is loaded **only when a visitor asks for it**.
+The expensive part of the original page is the TidyCal booking widget. Here it is loaded **after the page has finished loading**, in the background, so it never competes with the initial render.
 
 <p align="center">
   <img src="assets/flow.svg" alt="Step 1: the page loads fast. Step 2: the visitor clicks Book a Demo. Step 3: the TidyCal calendar loads." width="100%">
 </p>
 
 1. **The page loads fast.** Only HTML, one stylesheet and one small script. No third-party scripts in the initial load.
-2. **The visitor clicks** *Choose a Date & Time* (or any *Book A Demo* button).
-3. **TidyCal loads on demand.** The script is injected, the calendar replaces the CTA card in place, and a `book_demo_open` event is pushed to the dataLayer.
+2. **TidyCal preloads in the background.** Once the page has finished loading and the browser is idle, the TidyCal embed is loaded out of sight (hovering or tapping the button starts it sooner). Clicking the button swaps the CTA card for the calendar and pushes a `book_demo_open` event to the dataLayer. If the calendar isn't ready yet, a "Loading calendar…" message shows, and after 8 seconds it offers a link to the TidyCal booking page.
 
-Hovering or focusing the button warms up the connection to TidyCal, so the calendar appears quickly once clicked. If the script fails to load, the visitor is sent to the TidyCal booking page instead, and the button is a normal link when JavaScript is off.
+If the script fails to load, the card shows an error with a *Try Again* button and a link to the TidyCal booking page. The button is a normal link when JavaScript is off. (The diagram above predates the background preload, so its step 3 now happens before the click.)
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
@@ -55,7 +54,7 @@ Hovering or focusing the button warms up the connection to TidyCal, so the calen
 - **Metric-matched fallback font**, so text does not jump when Poppins swaps in (CLS stays at 0).
 - **Right-sized WebP images** in `images/opt/` (about 53 KB total, down from about 215 KB), each with explicit `width` and `height`.
 - **Lazy loading** for everything below the first screen; the header logo gets `fetchpriority="high"`.
-- **TidyCal on click**, not on page load.
+- **TidyCal in the background after page load**, not during it.
 - **GTM that stays quiet** until a real container ID is set.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
@@ -91,6 +90,8 @@ Trade-offs: visitors who leave within 5 seconds without interacting are not trac
 | Event | Fires when |
 |---|---|
 | `book_demo_open` | The visitor opens the TidyCal calendar |
+| `book_demo_loaded` | The calendar is ready (`load_ms` = time since the preload started) |
+| `book_demo_slow` | The calendar was still not ready 8 seconds after the visitor opened it |
 | `newsletter_signup` | A valid email is submitted in the newsletter form |
 
 `book_demo_open` means the calendar was opened, not that a booking was completed. To track completed bookings, use a thank-you redirect or TidyCal's own integrations.
@@ -127,7 +128,7 @@ All navigation, footer, social and app-store links point to the live IntoAEC sit
 .
 ├── index.html          the page (GTM, nav, hero, booking CTA, newsletter, footer)
 ├── styles.css          all styles, including @font-face for Poppins
-├── script.js           mobile nav, TidyCal on-demand loader, accordions, dataLayer events
+├── script.js           mobile nav, TidyCal background loader, accordions, dataLayer events
 ├── fonts/              Poppins woff2 files (Latin subset)
 ├── images/
 │   └── opt/            optimised WebP images actually used by the page
