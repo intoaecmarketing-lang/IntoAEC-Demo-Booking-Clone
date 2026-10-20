@@ -193,7 +193,7 @@
       const data = await res.json();
       if (!data.success) return say(data.error || 'Something went wrong. Please try again.', true);
       $('#nlEmail').value = '';
-      say('Thanks for subscribing!');
+      say('Almost there, Check your inbox to confirm');
       pushEvent('newsletter_signup');
     } catch (err) {
       say('Something went wrong. Please try again.', true);
