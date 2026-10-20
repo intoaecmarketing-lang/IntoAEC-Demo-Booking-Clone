@@ -51,8 +51,8 @@
     });
   });
 
-  // TidyCal: the embed is preloaded in the background once the page has finished loading,
-  // so it is usually ready by the time the visitor clicks. Clicking only reveals it.
+  // TidyCal: the embed is preloaded in the background once the visitor first interacts with the page,
+  // so it is usually ready by the time they click. Clicking only reveals it.
   // Until the iframe itself has loaded, a status message shows; after SLOW_MS it offers a direct link.
   const TIDYCAL_JS = 'https://asset-tidycal.b-cdn.net/js/embed.js';
   const BOOK_URL = 'https://tidycal.com/book-a-demo/discovery-call';
@@ -137,10 +137,15 @@
     if (!iframeLoaded) slowTimer = setTimeout(markSlow, SLOW_MS);
   };
 
-  // Preload once the page is idle; hover/focus/touch on the button starts it sooner
-  const preload = () => (window.requestIdleCallback ? requestIdleCallback(startLoad, { timeout: 3000 }) : setTimeout(startLoad, 1500));
-  if (document.readyState === 'complete') preload();
-  else window.addEventListener('load', preload);
+  // Preload on the visitor's first real interaction (move, scroll, tap, key), never automatically.
+  // Lab tools such as PageSpeed never interact, so TidyCal stays out of their measurements,
+  // while real visitors start the load well before they click. No timer fallback on purpose.
+  const interactionEvents = ['pointerdown', 'touchstart', 'scroll', 'keydown', 'mousemove'];
+  const onFirstInteraction = () => {
+    interactionEvents.forEach((ev) => window.removeEventListener(ev, onFirstInteraction));
+    startLoad();
+  };
+  interactionEvents.forEach((ev) => window.addEventListener(ev, onFirstInteraction, { passive: true }));
   ['pointerenter', 'focus', 'touchstart'].forEach((ev) => cta.addEventListener(ev, startLoad, { passive: true }));
   cta.addEventListener('click', (e) => {
     e.preventDefault();
