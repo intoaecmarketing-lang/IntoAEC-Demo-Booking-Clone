@@ -26,9 +26,12 @@ The expensive part of the original page is the TidyCal booking widget. Here it i
 </p>
 
 1. **The page loads fast.** Only HTML, one stylesheet and one small script. No third-party scripts in the initial load.
-2. **TidyCal preloads in the background.** Once the page has finished loading and the browser is idle, the TidyCal embed is loaded out of sight (hovering or tapping the button starts it sooner). Clicking the button swaps the CTA card for the calendar and pushes a `book_demo_open` event to the dataLayer. If the calendar isn't ready yet, a "Loading calendar…" message shows, and after 8 seconds it offers a link to the TidyCal booking page.
+2. **The calendar box is reserved in the HTML.** It is at its final size from first paint, so nothing shifts and there is no CTA step.
+3. **TidyCal loads on the first interaction.** Mouse move, scroll, tap or key press injects TidyCal's `embed.js`; visitors who do nothing get it 6 seconds after the page has loaded. Until the iframe is ready a "Loading calendar…" message shows, and after 8 seconds it offers a link to the TidyCal booking page.
 
-If the script fails to load, the card shows an error with a *Try Again* button and a link to the TidyCal booking page. The button is a normal link when JavaScript is off. (The diagram above predates the background preload, so its step 3 now happens before the click.)
+Why not load it immediately? TidyCal's iframe is not light: it brings its own GTM containers, GA, Meta pixel, Clarity, Stripe and more (about 15 extra requests). In PageSpeed Insights that work runs on the main thread and dropped the score from 100 to the low 60s (TBT 900 ms+, Speed Index 7 s).
+
+If the script fails to load, the card shows an error with a link to the TidyCal booking page.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
@@ -54,7 +57,7 @@ If the script fails to load, the card shows an error with a *Try Again* button a
 - **Metric-matched fallback font**, so text does not jump when Poppins swaps in (CLS stays at 0).
 - **Right-sized WebP images** in `images/opt/` (about 53 KB total, down from about 215 KB), each with explicit `width` and `height`.
 - **Lazy loading** for everything below the first screen; the header logo gets `fetchpriority="high"`.
-- **TidyCal in the background after page load**, not during it.
+- **TidyCal on first interaction**, not during page load (see above).
 - **GTM that stays quiet** until a real container ID is set.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>

@@ -185,8 +185,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </ul>
       </div>
 
-      <aside class="booking" id="booking" aria-label="Book a discovery call">
-        <!-- TidyCal embed is injected directly by script.js -->
+      <aside class="booking loaded" id="booking" aria-label="Book a discovery call">
+        <!-- The box is reserved here so the layout never shifts; script.js loads TidyCal's embed.js on first interaction -->
+        <div class="book-embed show">
+          <div class="book-loading" id="bookLoading" role="status">Loading calendar…</div>
+          <div class="tidycal-embed" data-path="book-a-demo/discovery-call"></div>
+          <p class="book-note">Trouble loading? <a href="https://tidycal.com/book-a-demo/discovery-call" target="_blank" rel="noopener">Open the booking page in a new tab</a></p>
+        </div>
       </aside>
     </div>
   </section>

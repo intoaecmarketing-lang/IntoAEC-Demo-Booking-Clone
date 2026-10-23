@@ -51,17 +51,20 @@
     });
   });
 
-  // TidyCal: the embed is injected and shown directly — no CTA step.
+  // TidyCal: the calendar box is already in the HTML (no CTA step). TidyCal's embed.js pulls in a heavy
+  // iframe (GTM, GA, Meta pixel, Clarity, Stripe...) that would block the main thread during page load,
+  // so it is injected on the visitor's first interaction, or IDLE_MS after the page has loaded.
   // Until the iframe itself has loaded, a status message shows; after SLOW_MS it offers a direct link.
   const TIDYCAL_JS = 'https://asset-tidycal.b-cdn.net/js/embed.js';
   const BOOK_URL = 'https://tidycal.com/book-a-demo/discovery-call';
   const SLOW_MS = 8000;
+  const IDLE_MS = 6000;
   const box = $('#booking');
   const fallbackLink = '<a href="' + BOOK_URL + '" target="_blank" rel="noopener">Open the booking page in a new tab</a>';
-  let wrap = null;
+  const wrap = box.querySelector('.book-embed');
+  let started = false;
   let startedAt = 0;
   let iframeLoaded = false;
-  let revealed = false;
   let slowTimer = 0;
 
   const markSlow = () => {
@@ -73,30 +76,22 @@
 
   const showError = () => {
     clearTimeout(slowTimer);
-    if (wrap) wrap.remove();
-    wrap = null;
+    wrap.remove();
     box.classList.remove('loaded');
-    if (revealed && !$('#bookError')) {
+    if (!$('#bookError')) {
       const err = document.createElement('p');
       err.id = 'bookError';
       err.className = 'book-error';
       err.innerHTML = "The calendar couldn't load. Please check your connection or disable any ad blocker, then try again.<br>" + fallbackLink;
       box.appendChild(err);
     }
-    revealed = false;
   };
 
   const startLoad = () => {
-    if (wrap) return;
+    if (started) return;
+    started = true;
+    INTERACTION.forEach((ev) => window.removeEventListener(ev, startLoad));
     startedAt = Date.now();
-    iframeLoaded = false;
-    wrap = document.createElement('div');
-    wrap.className = 'book-embed show';
-    wrap.innerHTML =
-      '<div class="book-loading" id="bookLoading" role="status">Loading calendar…</div>' +
-      '<div class="tidycal-embed" data-path="book-a-demo/discovery-call"></div>' +
-      '<p class="book-note">Trouble loading? ' + fallbackLink + '</p>';
-    box.appendChild(wrap);
     const s = document.createElement('script');
     s.src = TIDYCAL_JS;
     s.async = true;
@@ -112,18 +107,20 @@
     };
     window.addEventListener('message', (e) => { if (e.origin === 'https://tidycal.com') markLoaded(); });
     s.onload = () => {
-      const frame = wrap && wrap.querySelector('iframe');
+      const frame = wrap.querySelector('iframe');
       if (frame) frame.addEventListener('load', markLoaded);
     };
     s.onerror = () => { s.remove(); showError(); };
     document.body.appendChild(s);
-    revealed = true;
-    box.classList.add('loaded');
     slowTimer = setTimeout(markSlow, SLOW_MS);
   };
 
-  // Show the calendar directly
-  startLoad();
+  // Load on the first real interaction, or IDLE_MS after the page has loaded for visitors who don't touch anything
+  const INTERACTION = ['pointerdown', 'pointermove', 'scroll', 'keydown', 'touchstart'];
+  INTERACTION.forEach((ev) => window.addEventListener(ev, startLoad, { passive: true }));
+  const startWhenIdle = () => setTimeout(startLoad, IDLE_MS);
+  if (document.readyState === 'complete') startWhenIdle();
+  else window.addEventListener('load', startWhenIdle);
 
   // Footer accordions
   document.querySelectorAll('.acc button').forEach((b) =>

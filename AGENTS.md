@@ -8,3 +8,5 @@
 1. Calendar takes too long to switch between months.
 
 ### Agents Memory 
+* opencode -s ses_e97e36f57ffex16UZekARPO23y
+* claude --resume 6be74bbb-74b3-4bb9-b414-fe4bbd7074b9
