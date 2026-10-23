@@ -122,6 +122,9 @@
   if (document.readyState === 'complete') startWhenIdle();
   else window.addEventListener('load', startWhenIdle);
 
+  // Copyright year follows the visitor's clock (static HTML keeps a no-JS fallback)
+  $('#year').textContent = new Date().getFullYear();
+
   // Footer accordions
   document.querySelectorAll('.acc button').forEach((b) =>
     b.addEventListener('click', () => b.classList.toggle('open'))
